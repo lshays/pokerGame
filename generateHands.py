@@ -9,8 +9,10 @@ for card in cards:
 from random import shuffle, random
 shuffle(deck, random) 
 
-def getHands():
+def getHands(holdem = True):
     shuffle(deck, random)
+    if holdem:
+        return(deck[0:2], deck[2:4], deck[4:9])
     return (deck[0:5], deck[5:10])
 
 if __name__ == "__main__":

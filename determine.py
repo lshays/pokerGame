@@ -167,49 +167,31 @@ def highCard(hand):
 
 
 def winner(p1Hand, p2Hand):
+    possibleHands = []
+    possibleHands.append((royalFlush, "Royal Flush"))
+    possibleHands.append((straightFlush, "Straight Flush"))
+    possibleHands.append((fourOfAKind, "Four of a Kind"))
+    possibleHands.append((fullHouse, "Full House"))
+    possibleHands.append((flush, "Flush"))
+    possibleHands.append((straight, "Straight"))
+    possibleHands.append((threeOfAKind, "Three of a Kind"))
+    possibleHands.append((twoPairs, "Two Pairs"))
+    possibleHands.append((onePair, "One Pair"))
+    possibleHands.append((highCard, "High Card"))
     p1 = (0, "")
     p2 = (0, "")
-    if royalFlush(p1Hand):
-        p1 = (royalFlush(p1Hand), "Royal Flush")
-    elif straightFlush(p1Hand):
-        p1 = (straightFlush(p1Hand), "Straight Flush")
-    elif fourOfAKind(p1Hand):
-        p1 = (fourOfAKind(p1Hand), "Four of a Kind")
-    elif fullHouse(p1Hand):
-        p1 = (fullHouse(p1Hand), "Full House")
-    elif flush(p1Hand):
-        p1 = (flush(p1Hand), "Flush")
-    elif straight(p1Hand):
-        p1 = (straight(p1Hand), "Straight")
-    elif threeOfAKind(p1Hand):
-        p1 = (threeOfAKind(p1Hand), "Three of a Kind")
-    elif twoPairs(p1Hand):
-        p1 = (twoPairs(p1Hand), "Two Pairs")
-    elif onePair(p1Hand):
-        p1 = (onePair(p1Hand), "One Pair")
-    else:
-        p1 = (highCard(p1Hand), "High Card")
 
-    if royalFlush(p2Hand):
-        p2 = (royalFlush(p2Hand), "Royal Flush")
-    elif straightFlush(p2Hand):
-        p2 = (straightFlush(p2Hand), "Straight Flush")
-    elif fourOfAKind(p2Hand):
-        p2 = (fourOfAKind(p2Hand), "Four of a Kind")
-    elif fullHouse(p2Hand):
-        p2 = (fullHouse(p2Hand), "Full House")
-    elif flush(p2Hand):
-        p2 = (flush(p2Hand), "Flush")
-    elif straight(p2Hand):
-        p2 = (straight(p2Hand), "Straight")
-    elif threeOfAKind(p2Hand):
-        p2 = (threeOfAKind(p2Hand), "Three of a Kind")
-    elif twoPairs(p2Hand):
-        p2 = (twoPairs(p2Hand), "Two Pairs")
-    elif onePair(p2Hand):
-        p2 = (onePair(p2Hand), "One Pair")
-    else:
-        p2 = (highCard(p2Hand), "High Card")
+    for hand in possibleHands:
+        result = hand[0](p1Hand)
+        if result:
+            p1 = (result, hand[1])
+            break
+        
+    for hand in possibleHands:
+        result = hand[0](p2Hand)
+        if result:
+            p2 = (result, hand[1])
+            break
 
     if p1[0] > p2[0]:
         return 1, p1[1], p2[1]
@@ -217,3 +199,39 @@ def winner(p1Hand, p2Hand):
         return 2, p1[1], p2[1]
     else:
         return 0, p1[1], p2[1]
+
+def bestHand(p1Hand, p2Hand, middle):
+    from itertools import permutations
+    p1Hands = permutations(p1Hand + middle, 5)
+    p2Hands = permutations(p2Hand + middle, 5)
+    possibleHands = []
+    possibleHands.append(royalFlush)
+    possibleHands.append(straightFlush)
+    possibleHands.append(fourOfAKind)
+    possibleHands.append(fullHouse)
+    possibleHands.append(flush)
+    possibleHands.append(straight)
+    possibleHands.append(threeOfAKind)
+    possibleHands.append(twoPairs)
+    possibleHands.append(onePair)
+    possibleHands.append(highCard)
+
+    p1Score = 0
+    p2Score = 0
+    for hand in p1Hands:
+        for f in possibleHands:
+            if f(hand) > p1Score:
+                p1Score = f(hand)
+                p1Hand = hand
+            else:
+                continue
+
+    for hand in p2Hands:
+        for f in possibleHands:
+            if f(hand) > p2Score:
+                p2Score = f(hand)
+                p2Hand = hand
+
+    return (p1Hand, p2Hand)
+
+
