@@ -20,15 +20,15 @@ def getCard(c, s):
     return card
 
 
-def printCards(cards, faceUp=True, message="", indented=False):
+def printCards(cards, faceUp=[1, 1, 1, 1, 1], message="", indented=False):
     lines = []
     if indented:
         lines = ["\t\t" for i in range(8)]
     else:
         lines = ["" for i in range(8)]
-    for card in cards:
-        if faceUp:
-            cardLines = getCard(card[:-1], card[-1])
+    for x in range(len(cards)):
+        if faceUp[x]:
+            cardLines = getCard(cards[x][:-1], cards[x][-1])
         else:
             cardLines = getCard(" ", " ")
         for i in range(len(cardLines)):
