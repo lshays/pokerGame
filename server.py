@@ -21,29 +21,38 @@ class ThreadedServer(object):
             client, address = self.sock.accept()
             client.settimeout(300)
             myThread = threading.Thread(target = self.listenToClient, args=(client, address))
-            self.players.append(myThread)
+            self.players.append((client))
             myThread.start()
 
+    def broadcast(self, msg):
+        for player in self.players:
+            player.send(msg)
+
     def listenToClient(self, client, address):
-        print "Player {0} joined".format(len(self.players))
         size = 1024
+        name = ""
         while True:
             try:
                 data = client.recv(size)
                 if data:
-                    if len(self.players) != 2:
-                        response = "Waiting on {0} more player(s) to join".format(2-len(self.players))
-                    elif data == "STARTGAME":
+                    if data[0:6] == ("NAMEIS"):
+                        name = data.split()[1]
+                        self.broadcast(name + " has joined")
+                    elif len(self.players) != 2:
+                        print "sending wait"
+                        response = "WAITFORPLAYERS"
+                    elif data == "READY":
+                        print "sending ready"
                         response = "Let's play"
                     client.send(response)
                 else:
-                    print "Player {0} disconnected".format(len(self.players))
+                    print "{0} disconnected".format(name)
                     client.close()
                     self.players.pop()
                     return False
             except:
                 client.close()
-                print "Player {0} timed out".format(len(self.players))
+                print "{0} timed out".format(name)
                 self.players.pop()
                 return False
 

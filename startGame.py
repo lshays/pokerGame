@@ -22,14 +22,16 @@ def placeBet(chips):
             placeBet(chips)
 
 chips = 100
-myClient = Client("localhost", 12345)
+#myClient = Client("localhost", 12345)
 while True:
-    myClient.send("STARTGAME") 
-    response = myClient.receive()
-    print response
-    while response != "Let's play": 
-        myClient.send("STARTGAME")
-        response = myClient.receive()
+    #if not myClient.registered:
+    #    myClient.register()
+    #response = myClient.receive()
+    #print response
+    #response = ""
+    #while response != "Let's play": 
+    #    myClient.send("READY")
+    #    response = myClient.receive()
     hands = getHands()
     p1 = hands[0]
     p2 = hands[1]

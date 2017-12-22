@@ -10,9 +10,15 @@ class Client(object):
         print "Connecting to server..."
         self.host = host
         self.port = port
+        self.registered = False
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((host, port))
         print "Connection successful"
+        self.name = raw_input("Enter Name: ")
+
+    def register(self):
+        self.socket.send("NAMEIS " + self.name)
+        self.registered = True
 
     def send(self, message):
         self.socket.send(message)
