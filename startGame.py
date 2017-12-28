@@ -2,6 +2,7 @@ from generateHands import getHands
 from determine import winner, bestHand
 from printer import printCards
 from client import Client
+import sys
 
 def placeBet(chips):
     bet = raw_input("<Enter> = pass, <f> = fold\nEnter number of chips to bet: ")
@@ -22,20 +23,17 @@ def placeBet(chips):
             placeBet(chips)
 
 chips = 100
-#myClient = Client("localhost", 12345)
+player = Client("localhost", 12345)
 while True:
-    #if not myClient.registered:
-    #    myClient.register()
-    #response = myClient.receive()
-    #print response
-    #response = ""
-    #while response != "Let's play": 
-    #    myClient.send("READY")
-    #    response = myClient.receive()
-    hands = getHands()
-    p1 = hands[0]
-    p2 = hands[1]
-    middle = hands[2] 
+    player.register()
+    # Player may not be registered if servers are full
+    if not player.registered:
+        sys.exit()
+    player.startGame()
+    middle = player.getSharedCards()
+    p1 = player.getHand()
+    p2 = player.getOtherHands()[0]
+    
     pot = 10
     chips -= 5
 
@@ -105,3 +103,5 @@ while True:
     if option.lower() == 'q':
         break
     print "\n"
+    player.registered = False
+    player.newGame()

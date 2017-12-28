@@ -9,10 +9,8 @@ for card in cards:
         deck.append(str(card) + suit)
 
 def getDeck():
-    return shuffle(deck, random)
-
-def getHands(holdem = True):
     shuffle(deck, random)
-    if holdem:
-        return(deck[0:2], deck[2:4], deck[4:9])
-    return (deck[0:5], deck[5:10])
+    return deck
+    
+def shuffleDeck(d):
+    shuffle(d, random)

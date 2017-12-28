@@ -1,5 +1,7 @@
 import socket
 import threading
+import dealer
+import json
 
 ip = 'localhost'
 port = 12345
@@ -14,6 +16,8 @@ class ThreadedServer(object):
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind((self.host, self.port))
         self.players = []
+        self.deck = dealer.getDeck()
+        self.dealt = threading.Event()
 
     def listen(self):
         self.sock.listen(5)
@@ -21,7 +25,7 @@ class ThreadedServer(object):
             client, address = self.sock.accept()
             client.settimeout(300)
             myThread = threading.Thread(target = self.listenToClient, args=(client, address))
-            self.players.append((client))
+            self.players.append(client)
             myThread.start()
 
     def broadcast(self, msg):
@@ -35,25 +39,45 @@ class ThreadedServer(object):
             try:
                 data = client.recv(size)
                 if data:
-                    if data[0:6] == ("NAMEIS"):
+                    if data[0:8] == ("REGISTER"):
+                        if len(self.players) > 2:
+                            client.send("QUIT")
+                        else:
+                            client.send("REGISTERED")
                         name = data.split()[1]
-                        self.broadcast(name + " has joined")
+                        print name, "ready"
                     elif len(self.players) != 2:
-                        print "sending wait"
-                        response = "WAITFORPLAYERS"
-                    elif data == "READY":
-                        print "sending ready"
-                        response = "Let's play"
-                    client.send(response)
+                        client.send("WAITFORPLAYERS")
+                    elif data == "STARTGAME":
+                        if self.players[0] == client:
+                            dealer.shuffleDeck(self.deck)
+                            self.dealt.set()
+                        else:
+                            self.dealt.wait()
+                        client.send("START")
+                    elif data == "GETSHAREDCARDS":
+                        client.send(json.dumps(self.deck[0:5]))
+                    elif data == "GETHAND":
+                        for i in range(len(self.players)):
+                            if self.players[i] == client:
+                                client.send(json.dumps(self.deck[5+2*i:7+2*i]))
+                    elif data == "GETOTHERHANDS":
+                        others = []
+                        for i in range(len(self.players)):
+                            if self.players[i] != client:
+                                others.append(self.deck[5+2*i:7+2*i])
+                        client.send(json.dumps(others))
+                    elif data == "NEWGAME":
+                        self.dealt.clear()
                 else:
                     print "{0} disconnected".format(name)
                     client.close()
-                    self.players.pop()
+                    self.players.remove(client)
                     return False
             except:
                 client.close()
-                print "{0} timed out".format(name)
-                self.players.pop()
+                print "{0} disconnected".format(name)
+                self.players.remove(client)
                 return False
 
 if __name__ == "__main__":
