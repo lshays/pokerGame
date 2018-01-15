@@ -1,33 +1,15 @@
-from generateHands import getHands
 from determine import winner, bestHand
 from printer import printCards
 from client import Client
 import sys
 
-def placeBet(chips):
-    bet = raw_input("<Enter> = pass, <f> = fold\nEnter number of chips to bet: ")
-    if not bet:
-        return
-    else:
-        try:
-            if bet.lower() == "f":
-                return bet
-            bet = int(bet)
-            if bet > chips:
-                print "Oops, you dont have that many chips silly!"
-                placeBet(chips)
-            else:
-                return bet
-        except ValueError:
-            print "Oops, you can't bet {0} chips silly!".format(bet) 
-            placeBet(chips)
-
 chips = 100
 player = Client("localhost", 12345)
+
 while True:
-    player.register()
-    # Player may not be registered if servers are full
-    if not player.registered:
+    player.newGame()
+    print "Registering..."
+    if not player.register():
         sys.exit()
     player.startGame()
     middle = player.getSharedCards()
@@ -47,42 +29,83 @@ while True:
     printCards(middle, [0, 0, 0, 0, 0], message="Pot: " + str(pot))
     printCards(p1, indented=True)
     print "Chips:", chips
+    chipResult = player.placeBet(chips)
+    if chipResult == -1:
+        w[0] = 2
+    elif chipResult == -69:
+        w[0] = 1
+    else:
+        chips -= chipResult
+    chipResult = player.placeSecondBet(chips)
+    if chipResult == -1:
+        w[0] = 2
+    elif chipResult == -69:
+        w[0] = 1
+    else:
+        chips -= chipResult
+    pot = player.getPot()
+    
+    printCards(p2, [0, 0], indented=True)
+    printCards(middle, [1, 1, 1, 0, 0], message="Pot: " + str(pot))
+    printCards(p1, indented=True)
+    print "Chips:", chips
+    chipResult = player.placeBet(chips)
+    if chipResult == -1:
+        w[0] = 2
+    elif chipResult == -69:
+        w[0] = 1
+    else:
+        chips -= chipResult
+    chipResult = player.placeSecondBet(chips)
+    if chipResult == -1:
+        w[0] = 2
+    elif chipResult == -69:
+        w[0] = 1
+    else:
+        chips -= chipResult
+    pot = player.getPot()
+    
+    printCards(p2, [0, 0], indented=True)
+    printCards(middle, [1, 1, 1, 1, 0], message="Pot: " + str(pot))
+    printCards(p1, indented=True)
+    print "Chips:", chips
+    chipResult = player.placeBet(chips)
+    if chipResult == -1:
+        w[0] = 2
+    elif chipResult == -69:
+        w[0] = 1
+    else:
+        chips -= chipResult
+    chipResult = player.placeSecondBet(chips)
+    if chipResult == -1:
+        w[0] = 2
+    elif chipResult == -69:
+        w[0] = 1
+    else:
+        chips -= chipResult
+    pot = player.getPot()
+    
+    printCards(p2, [0, 0], indented=True)
+    printCards(middle, [1, 1, 1, 1, 1], message="Pot: " + str(pot))
+    printCards(p1, indented=True)
+    print "Chips:", chips
+    chipResult = player.placeBet(chips)
+    if chipResult == -1:
+        w[0] = 2
+    elif chipResult == -69:
+        w[0] = 1
+    else:
+        chips -= chipResult
+    chipResult = player.placeSecondBet(chips)
+    if chipResult == -1:
+        w[0] = 2
+    elif chipResult == -69:
+        w[0] = 1
+    else:
+        chips -= chipResult
+    pot = player.getPot()
 
-    fold = False
-    bet = placeBet(chips)
-    if bet:
-        if bet == "f":
-            fold = True
-            w[0] = 2
-            w[2] = ""
-        else:
-            chips -= bet
-            pot += 2*bet
-    print "\n"
-
-    if not fold:
-        faceUp = [1, 1, 0, 0, 0]
-        while not all(faceUp):
-            for x in range(len(faceUp)):
-                if faceUp[x] == 0:
-                    faceUp[x] = 1
-                    break
-            printCards(p2, [0, 0], indented=True)
-            printCards(middle, faceUp, message="Pot: " + str(pot))
-            printCards(p1, indented=True)
-            print "Chips:", chips
-            bet = placeBet(chips)
-            if bet:
-                if bet == "f":
-                    fold = True
-                    w[0] = 2
-                    w[2] = ""
-                    break
-                chips -= bet
-                pot += 2*bet
-            print "\n"
-
-    printCards(p2, [not fold, not fold], message=w[2], indented=True)
+    printCards(p2, [1, 1], message=w[2], indented=True)
     printCards(middle, message="Pot: " + str(pot))
     printCards(p1, message=w[1], indented=True)
     
@@ -103,5 +126,3 @@ while True:
     if option.lower() == 'q':
         break
     print "\n"
-    player.registered = False
-    player.newGame()

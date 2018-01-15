@@ -7,27 +7,28 @@ class Barrier:
         self.count = 0
         self.mutex = Semaphore(1)
         self.barrier = Semaphore(0)
-        # Untested waiting variable
-        self.n_waiting = 0
+        self.barrier2 = Semaphore(1)
 
     def wait(self):
         self.mutex.acquire()
-        self.count = self.count + 1
-        self.n_waiting += 1
-        self.mutex.release()
-        if self.count == self.n: self.barrier.release()
-        self.barrier.acquire()
-        self.barrier.release()
-        # Untested waiting method below
-        self.mutex.acquire()
-        self.n_waiting -= 1
+        self.count += 1
+        if self.count == self.n:
+            self.barrier2.acquire()
+            self.barrier.release()
         self.mutex.release()
         
-    # Waits until all threads have crossed barrier, then resets
-    def reset(self):
-        while self.n_waiting != 0:
-            pass
-        self.__init__(self.n)
+        self.barrier.acquire()
+        self.barrier.release()
+        
+        self.mutex.acquire()
+        self.count -= 1
+        if self.count == 0:
+            self.barrier.acquire()
+            self.barrier2.release()
+        self.mutex.release()
+        
+        self.barrier2.acquire()
+        self.barrier2.release()
         
 b = Barrier(2)
 
