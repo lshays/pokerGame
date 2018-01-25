@@ -4,7 +4,7 @@ import utils
 import time
 import sys
 
-SERVER_IP   = '127.0.0.1'
+SERVER_IP   = 'lshays-VirtualBox' 
 PORT_NUMBER = 12345
 SIZE = 1024
 

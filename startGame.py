@@ -4,7 +4,7 @@ from client import Client
 import sys
 
 chips = 100
-player = Client("localhost", 12345)
+player = Client("lshays-VirtualBox", 12345)
 
 while True:
     player.newGame()

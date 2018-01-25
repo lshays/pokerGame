@@ -4,7 +4,7 @@ import dealer
 import barrier
 import json
 
-ip = "localhost"
+ip = socket.gethostname()
 port = 12345
 numPlayers = 2
 
@@ -148,4 +148,5 @@ class ThreadedServer(object):
                 return False
 
 if __name__ == "__main__":
+    print ip
     ThreadedServer(ip, port).listen()

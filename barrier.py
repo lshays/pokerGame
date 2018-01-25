@@ -29,7 +29,7 @@ class Barrier:
         
         self.barrier2.acquire()
         self.barrier2.release()
-        
+
 b = Barrier(2)
 
 def func1():
