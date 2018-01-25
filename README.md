@@ -1,9 +1,6 @@
 This is a texas holdem pokergame written in python.
 The game is very buggy right now, but somewhat functional.
 
-This was my first attempt at using python sockets to make a multiplayer game.
-As of now it has been tested using separate terminals with localhost.
-
 *** Warning, code is a mess ***
 
 CURRENT KNOWN ISSUES: 
