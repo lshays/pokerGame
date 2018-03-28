@@ -1,18 +1,29 @@
 # -*- coding: utf-8 -*-
-# ^^^ Allows characters such as suit representations to be used in code
+import os
+
+if os.name == 'nt': # Windows
+    SPADE = "\x06"
+    CLUB = "\x05"
+    HEART = "\x03"
+    DIAMOND = "\x04"
+else: # Linux
+    SPADE = "\xE2\x99\xA0"
+    CLUB = "\xE2\x99\xA3"
+    HEART = "\xE2\x99\xA5"
+    DIAMOND = "\xE2\x99\xA6"
 
 def getCard(c, s):
-    s = s.replace("H", "♥").replace("C", "♣").replace("D", "♦").replace("S", "♠")
+    s = s.replace("H", HEART).replace("C", CLUB).replace("D", DIAMOND).replace("S", SPADE)
     c = c.replace("T", "10")
     card = []
-    card.append("┌─────────┐")
+    card.append(u"┌─────────┐")
     card.append("|{0}       {1}|".format(c, s))
     card.append("|         |")
     card.append("|         |")
     card.append("|    {0}    |".format(c))
     card.append("|         |")
     card.append("|{1}       {0}|".format(c, s))
-    card.append("└─────────┘")
+    card.append(u"└─────────┘")
     for i in range(len(card)):
         if c == "10" and c in card[i]:
             index = card[i].index(" ")
