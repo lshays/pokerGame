@@ -12,6 +12,14 @@ else: # Linux
     HEART = "\xE2\x99\xA5"
     DIAMOND = "\xE2\x99\xA6"
 
+
+# Input:
+    # c - The numeric value of the card (2,3,4...Q,K,A)
+    # s - The suit of the card
+# Output: 
+    # card - A list of strings that represent a printable card
+# Effect:
+    # void
 def getCard(c, s):
     s = s.replace("H", HEART).replace("C", CLUB).replace("D", DIAMOND).replace("S", SPADE)
     c = c.replace("T", "10")
@@ -24,13 +32,22 @@ def getCard(c, s):
     card.append("|         |")
     card.append("|{1}       {0}|".format(c, s))
     card.append(u"└─────────┘")
-    for i in range(len(card)):
-        if c == "10" and c in card[i]:
-            index = card[i].index(" ")
-            card[i] = card[i][:index] + card[i][index+1:]
+    if c == "10": # Adjust spacing for 10 card
+        for i in range(len(card)):
+            if c in card[i]:
+                card[i] = card[i].replace(" ", "", 1)
     return card
 
 
+# Input:
+    # cards - card objects
+    # faceUp - which cards should be shown faceUp (1=faceup)
+    # message - message to be printed after cards displayed (winner, loser, etc) 
+    # indented - Shifts card display to right
+# Output:
+    # void
+# Effect:
+    # Hand of cards + optional message printed to screen
 def printCards(cards, faceUp=[1, 1, 1, 1, 1], message="", indented=False):
     lines = []
     if indented:
@@ -47,4 +64,3 @@ def printCards(cards, faceUp=[1, 1, 1, 1, 1], message="", indented=False):
     lines[4] += "\t" + message
     for line in lines:
         print line
-
