@@ -36,9 +36,9 @@ def getCard(c, s):
         List of strings that builds card
 
     """
-    s = s.replace("H", HEART)\
-        .replace("C", CLUB)\
-        .replace("D", DIAMOND)\
+    s = s.replace("H", HEART) \
+        .replace("C", CLUB) \
+        .replace("D", DIAMOND) \
         .replace("S", SPADE)
     c = c.replace("T", "10")
     card = []
@@ -50,7 +50,7 @@ def getCard(c, s):
     card.append(u"|         |")
     card.append(u"|{1}       {0}|".format(c, s))
     card.append(u"└─────────┘")
-    if c == "10": 
+    if c == "10":
         # Adjust spacing for 10 card
         for i in range(len(card)):
             if c in card[i]:

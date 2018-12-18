@@ -4,13 +4,13 @@ import utils
 import time
 import sys
 
-SERVER_IP   = 'lshays-VirtualBox' 
+SERVER_IP   = 'cgi-475508' # 'lshays-VirtualBox' 
 PORT_NUMBER = 12345
 SIZE = 1024
 
 class Client(object):
 
-    def __init__(self, host, port):
+    def __init__(self, host=SERVER_IP, port=PORT_NUMBER):
         print "Connecting to server..."
         self.host = host
         self.port = port

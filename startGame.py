@@ -4,7 +4,7 @@ from client import Client
 import sys
 
 chips = 100
-player = Client("cgi-475508", 12345)
+player = Client()
 
 while True:
     player.newGame()
